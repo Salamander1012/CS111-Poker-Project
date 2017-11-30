@@ -248,8 +248,92 @@ public class Hand {
 	  return 404;
    }
    
-   //tie breaker used for high card, same pair, same  and three of a kind
-   private int tieBreaker(Hand h) {
+   //tie breaker used for one pair and two pair
+   private int pairTieBreaker(Hand h) {
+	   sortByValue();
+	   h.sortByValue();
+	   Card[] a  = new Card[5];
+	   Card[] b = new Card[5];
+	   
+	   for (int i = 0; i<a.length; i++) {
+		   if(hand[i].getValue()!=this.highestDuplicate().getValue()) {
+			   addCardTemp(hand[i], a);
+		   }
+		   
+		   if(h.getHandArr()[i].getValue()!=h.highestDuplicate().getValue()) {
+			   addCardTemp(h.getHandArr()[i], b);
+		   }
+	   }
+	   /*
+	   for(int i= 0; i<a.length; i++) {
+		   System.out.println(a[i] + "|" + b[i]);
+	   }
+	   */
+	   for(int i = a.length-1;i>=0; i--) {
+		   //check to see if non pair cards are aces
+		   if(containsCardWithValue(a, 1) && containsCardWithValue(b, 1)) {
+			   System.out.println("Tie: same hand");
+			   return 0;
+		   } else if(containsCardWithValue(a, 1)) {
+			   System.out.println("Won: higher non pair card");
+			   return 1;
+		   } else if(containsCardWithValue(b, 1)) {
+			   System.out.println("Lost: lower non pair card");
+			   return -1;
+		   }
+		   //check rest of non pair cards
+		   if(a[i]!=null) {
+			   if(a[i].getValue()>b[i].getValue()) {
+				   System.out.println("Won: higher non pair card");
+				   return 1;
+			   }
+			   if(a[i].getValue()<b[i].getValue()) {
+				   System.out.println("Lost: lower non pair card");
+				   return -1;
+			   }
+		   }	   
+	   }
+	   
+	   System.out.println("Tie: same hand");
+	   return 0;
+
+   }
+   
+   private int highCardFinder(Hand h) {
+	   sortByValue();
+	   h.sortByValue();
+	   Card[] a  = new Card[5];
+	   Card[] b = new Card[5];
+	   
+	   for (int i = 0; i<a.length; i++) {
+			   addCardTemp(hand[i], a);
+			   addCardTemp(h.getHandArr()[i], b);
+	   }
+	   
+	   for(int i = a.length-1;i>=0; i--) {
+		   //check for aces
+		   if(containsCardWithValue(a, 1) && containsCardWithValue(b, 1)) {
+			   System.out.println("Tie: same hand");
+			   return 0;
+		   } else if(containsCardWithValue(a, 1)) {
+			   System.out.println("Won: higher non pair card");
+			   return 1;
+		   } else if(containsCardWithValue(b, 1)) {
+			   System.out.println("Lost: lower non pair card");
+			   return -1;
+		   }
+		   //check rest of non pair cards
+		   if(a[i]!=null) {
+			   if(a[i].getValue()>b[i].getValue()) {
+				   System.out.println("Won: higher non pair card");
+				   return 1;
+			   }
+			   if(a[i].getValue()<b[i].getValue()) {
+				   System.out.println("Lost: lower non pair card");
+				   return -1;
+			   }
+		   }	   
+	   }
 	   
 	   return 404;
    }
@@ -439,6 +523,8 @@ public class Hand {
 	   return false;
    }
    
+  
+   
    public int compareTo(Hand h) {
 	 //check royal flush
 	   if(h.hasRoyalFlush() && this.hasRoyalFlush()) {
@@ -553,7 +639,7 @@ public class Hand {
 			   System.out.println("Won: high three of a kind vs low three of a kind");
 			   return 1;
 		   } else {
-			   
+			   System.out.println("both have same three of a kind? this shouldnt get called");
 		   }
 		   
 	   } else if (!h.hasTriplet() && this.hasTriplet()) {
@@ -563,6 +649,32 @@ public class Hand {
 		   System.out.println("Lost: Three of a kind");
 		   return -1;
 	   }
+	   
+	   //check two pair
+	   if(h.numPairs()==2 && this.numPairs()==2) {
+		   return pairTieBreaker(h);
+	   } else if(h.numPairs()!=2 && this.numPairs()==2) {
+		   System.out.println("Won: Two of a kind");
+		   return 1;
+	   } else if(h.numPairs()==2 && this.numPairs()!=2) {
+		   System.out.println("Lost: Two of a kind");
+		   return -1;
+	   } 
+	   
+	   //check pair
+	   if(h.numPairs()==1 && this.numPairs()==1) {
+		   return pairTieBreaker(h);
+	   } else if(h.numPairs()!=1 && this.numPairs()==1) {
+		   System.out.println("Won: Two of a kind");
+		   return 1;
+	   } else if(h.numPairs()==1 && this.numPairs()!=1) {
+		   System.out.println("Lost: Two of a kind");
+		   return -1;
+	   } 
+	   
+	   //check high card
+	   
+	   
 	   
 	   return -1000;
    }

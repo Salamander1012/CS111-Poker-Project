@@ -16,16 +16,16 @@ public class Poker {
 		
 		Hand s = new Hand();
 		s.addCard(new Card(3, SPADES));
-		s.addCard(new Card(4, SPADES));
-		s.addCard(new Card(5, HEARTS));
+		s.addCard(new Card(3, SPADES));
+		s.addCard(new Card(4, HEARTS));
 		s.addCard(new Card(6, SPADES));
-		s.addCard(new Card(7, SPADES));
+		s.addCard(new Card(1, SPADES));
 	
 		Hand h = new Hand();
-		h.addCard(new Card(10, SPADES));
-		h.addCard(new Card(10, SPADES));
-		h.addCard(new Card(12, CLUBS));
-		h.addCard(new Card(13, SPADES));
+		h.addCard(new Card(3, SPADES));
+		h.addCard(new Card(3, SPADES));
+		h.addCard(new Card(4, CLUBS));
+		h.addCard(new Card(7, SPADES));
 		h.addCard(new Card(1, SPADES));
 		
 		
