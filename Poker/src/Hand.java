@@ -222,6 +222,18 @@ public class Hand {
 	   return false;
    }
    
+   //index of card in Card[]
+   private int indexOfCard(Card[] cards, Card c) {
+	   for(int i = 0; i<cards.length; i++) {
+		   if(cards[i]!=null) {
+			   if(cards[i].getValue()==c.getValue()) {
+				   return i;
+			   }
+		   }
+	   }
+	   return -1;
+   }
+   
    private int higherFlush(Hand h) {
 	  
 	   //return -1 if this hands flush is lower than the flush being compared to
@@ -272,8 +284,8 @@ public class Hand {
 	   for(int i = a.length-1;i>=0; i--) {
 		   //check to see if non pair cards are aces
 		   if(containsCardWithValue(a, 1) && containsCardWithValue(b, 1)) {
-			   System.out.println("Tie: same hand");
-			   return 0;
+			   //System.out.println("Tie: same hand");
+			   //return 0;
 		   } else if(containsCardWithValue(a, 1)) {
 			   System.out.println("Won: higher non pair card");
 			   return 1;
@@ -313,23 +325,23 @@ public class Hand {
 	   for(int i = a.length-1;i>=0; i--) {
 		   //check for aces
 		   if(containsCardWithValue(a, 1) && containsCardWithValue(b, 1)) {
-			   System.out.println("Tie: same hand");
-			   return 0;
+			   //System.out.println("Tie: same hand");
+			   //return 0;
 		   } else if(containsCardWithValue(a, 1)) {
-			   System.out.println("Won: higher non pair card");
+			   System.out.println("Won: high card");
 			   return 1;
 		   } else if(containsCardWithValue(b, 1)) {
-			   System.out.println("Lost: lower non pair card");
+			   System.out.println("Lost: low card");
 			   return -1;
 		   }
 		   //check rest of non pair cards
 		   if(a[i]!=null) {
 			   if(a[i].getValue()>b[i].getValue()) {
-				   System.out.println("Won: higher non pair card");
+				   System.out.println("Won: high card");
 				   return 1;
 			   }
 			   if(a[i].getValue()<b[i].getValue()) {
-				   System.out.println("Lost: lower non pair card");
+				   System.out.println("Lost: low card");
 				   return -1;
 			   }
 		   }	   
@@ -375,27 +387,28 @@ public class Hand {
    
    public boolean hasTriplet() {
 	   sortByValue();
-	   Card[] pair = new Card[5];
+	   Card[] cards = new Card[5];
+	   int[] counts = {0, 0, 0, 0, 0};
 	   int count = 0;
 	   int uniquePairs = 0;
-	   for (int i = 0; i<hand.length-1; i++) {
-	   		if(hand[i].getValue()==hand[i+1].getValue()) {
-	   			if(containsCard(pair, hand[i])==false) {
-	   				uniquePairs++;
-	   				count +=2;
-	   			} else {
-	   				count++;
-	   			}
-	   			addCardTemp(hand[i], pair);
-	   		}
+	   
+	   for(int i = 0; i<hand.length; i++) {
+		   if(!containsCardWithValue(cards, hand[i].getValue())) {
+			   counts[uniquePairs]++;
+			   addCardTemp(hand[i], cards); 
+			   uniquePairs++;
+			   
+		   } else {
+			   counts[indexOfCard(cards, hand[i])]++;
+		   }
 	   }
 	   
-	   if(uniquePairs==1 && count==3) {
-		   System.out.println("Three of a kind");
-		   return true;
-	   } else {
-		   return false;
+	   for(int i = 0;i<cards.length; i++) {
+		   if(counts[i]==3) {
+			   return true;
+		   }
 	   }
+	   return false;
    }
    
    public boolean hasFlush() {
@@ -421,52 +434,63 @@ public class Hand {
    
    public boolean hasFullHouse() {
 	   sortByValue();
-	   Card[] pair = new Card[5];
+	   Card[] cards = new Card[5];
+	   int[] counts = {0, 0, 0, 0, 0};
 	   int count = 0;
 	   int uniquePairs = 0;
-	   for (int i = 0; i<hand.length-1; i++) {
-	   		if(hand[i].getValue()==hand[i+1].getValue()) {
-	   			if(containsCard(pair, hand[i])==false) {
-	   				uniquePairs++;
-	   				count +=2;
-	   			} else {
-	   				count++;
-	   			}
-	   			addCardTemp(hand[i], pair);
-	   		}
+	   
+	   for(int i = 0; i<hand.length; i++) {
+		   if(!containsCardWithValue(cards, hand[i].getValue())) {
+			   counts[uniquePairs]++;
+			   addCardTemp(hand[i], cards); 
+			   uniquePairs++;
+			   
+		   } else {
+			   counts[indexOfCard(cards, hand[i])]++;
+		   }
 	   }
 	   
-	   if(uniquePairs==2 && count==5) {
-		   //System.out.println("Full House");
-		   return true;
-	   } else {
-		   return false;
+	   boolean hasThreeOfAKind = false;
+	   boolean hasTwoOfAKind = false;
+	   for(int i = 0;i<cards.length; i++) {
+		   if(counts[i]==3) {
+			   hasThreeOfAKind=true;
+		   }
+		   if(counts[i]==2) {
+			   hasTwoOfAKind = true;
+		   }
 	   }
+	   
+	   if(hasThreeOfAKind && hasTwoOfAKind) {
+		   return true;
+	   }
+	   return false;
    }
    
    public boolean hasFourOfAKind() {
 	   sortByValue();
-	   Card[] pair = new Card[5];
+	   Card[] cards = new Card[5];
+	   int[] counts = {0, 0, 0, 0, 0};
 	   int count = 0;
 	   int uniquePairs = 0;
-	   for (int i = 0; i<hand.length-1; i++) {
-	   		if(hand[i].getValue()==hand[i+1].getValue()) {
-	   			if(containsCard(pair, hand[i])==false) {
-	   				uniquePairs++;
-	   				count +=2;
-	   			} else {
-	   				count++;
-	   			}
-	   			addCardTemp(hand[i], pair);
-	   		}
+	   
+	   for(int i = 0; i<hand.length; i++) {
+		   if(!containsCardWithValue(cards, hand[i].getValue())) {
+			   counts[uniquePairs]++;
+			   addCardTemp(hand[i], cards); 
+			   uniquePairs++;
+			   
+		   } else {
+			   counts[indexOfCard(cards, hand[i])]++;
+		   }
 	   }
 	   
-	   if(uniquePairs==1 && count==4) {
-		   //System.out.println("Four of a kind");
-		   return true;
-	   } else {
-		   return false;
+	   for(int i = 0;i<cards.length; i++) {
+		   if(counts[i]==4) {
+			   return true;
+		   }
 	   }
+	   return false;
    }
      
    public Card highestValue() {
@@ -522,7 +546,6 @@ public class Hand {
 	   }
 	   return false;
    }
-   
   
    
    public int compareTo(Hand h) {
@@ -555,7 +578,7 @@ public class Hand {
 		   return -1;
 	   }
 	   
-	   //check four house
+	   //check four of a kind
 	   if(h.hasFourOfAKind() && this.hasFourOfAKind()) {
 		     if(h.highestDuplicate().getValue()>this.highestDuplicate().getValue()) {
 		    	 	System.out.println("Lost: low four of a kind vs high four of a kind");
@@ -585,6 +608,7 @@ public class Hand {
 		   System.out.println("Won: full house");
 		   return 1;
 	   } else if(h.hasFullHouse() && !this.hasFullHouse()) {
+		   System.out.println("dsadas");
 		   System.out.println("Lost: full house");
 		   return -1;
 	   }
@@ -673,10 +697,9 @@ public class Hand {
 	   } 
 	   
 	   //check high card
-	   
-	   
-	   
-	   return -1000;
+	   return highCardFinder(h);
+
+
    }
    
 
