@@ -52,12 +52,12 @@ public class Hand {
     */
    public void removeCard(Card c) {
 
-	for(int i=0 ; i<hand.length; i++){ 
-		if (hand[i].equals(c)){
-			hand[i] = null;
-			count = count-1;
-		}
-	}
+  for(int i=0 ; i<hand.length; i++){ 
+    if (hand[i]!=null && hand[i].equals(c)){
+      hand[i] = null;
+      count = count-1;
+    }
+  }
 
    }
    
@@ -74,6 +74,7 @@ public class Hand {
          throw new IllegalArgumentException("Position does not exist in hand: "
                + position);
       hand[position] = null;
+      count --;
    }
 
    /**
@@ -689,10 +690,10 @@ public class Hand {
 	   if(h.numPairs()==1 && this.numPairs()==1) {
 		   return pairTieBreaker(h);
 	   } else if(h.numPairs()!=1 && this.numPairs()==1) {
-		   System.out.println("Won: Two of a kind");
+		   System.out.println("Won: pair");
 		   return 1;
 	   } else if(h.numPairs()==1 && this.numPairs()!=1) {
-		   System.out.println("Lost: Two of a kind");
+		   System.out.println("Lost: pair");
 		   return -1;
 	   } 
 	   

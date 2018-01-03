@@ -1,0 +1,154 @@
+import java.util.Arrays;
+
+public class SearchAndSort {
+	public static void main(String[] args) {
+		int[] a = {5, 3, 6, 0};
+		int [] test = selectionSort(a);
+		
+		for(int i = 0; i<test.length; i++) {
+			System.out.print(test[i] + " ");
+		}
+		
+		System.out.println("target at index: " + binSearchRecursive(test, 0, 0, test.length-1));
+		
+	}
+	//BINARY SEARCH non recursive
+	public static int binSearch(int[] l, int target) {
+		System.out.println();
+		int low = 0;
+		int high = l.length-1;
+		int mid = (high-low)/2;
+
+		while(true) {
+			System.out.println("Low: " + low + " Mid: " + mid + " High: " + high);
+
+			if(l[mid]==target) {
+				return mid;
+			}
+			
+			if(high<low) {
+				return -1;
+			}
+			
+			if(target <= l[mid]) {
+				high = mid -1;
+				mid = (high+low)/2;
+			} else {
+				low = mid + 1;
+				mid = (high+low)/2;
+			}
+			
+		}
+	}
+	
+	//BINARY SEARCH recursive
+	// 0 3 5 6
+	public static int binSearchRecursive(int[] l, int target, int low, int high) {
+		int mid = (low+high)/2;
+		System.out.println(mid);
+		if(l[mid]==target) {
+			return mid;
+		}
+		if(high<low) {
+			return -1;
+		}
+		if(target>l[mid]) {
+			return binSearchRecursive(l, target, mid+1, high);
+		} else {
+			return binSearchRecursive(l, target, low, mid-1);
+		}
+	}
+	//SELECTION SORT
+	public static int[] selectionSort(int[] l) {
+		int arrLength = l.length;
+		while(true) {
+			if(arrLength == 1) {
+				break;
+			}
+			int max = 0;
+			int maxIndex = 0;
+			for(int i = 0; i<arrLength; i++) {
+				if(l[i]>max) {
+					max=l[i];
+					maxIndex = i;
+				}
+			}
+			int temp = l[arrLength-1];
+			l[arrLength-1] = max;
+			l[maxIndex] = temp;
+			arrLength--;
+		}
+		return l;
+	}
+	
+	//INSERTION SORT
+	public static int[] insertionSort(int[] l) {
+		for(int i = 1; i<l.length; i++) {
+			int movingIndex = i;
+			System.out.println(l[i]+" index:" + movingIndex);
+			while(l[movingIndex]<l[movingIndex-1]) {
+				System.out.println(l[movingIndex] + "<->" + l[movingIndex-1]);
+				int temp = l[movingIndex];
+				l[movingIndex] = l[movingIndex-1];
+				l[movingIndex-1] = temp; 
+				movingIndex--;
+				if(movingIndex==0) break;
+			}
+			
+			for(int k = 0; k<l.length; k++) {
+				System.out.print(l[k] + " ");
+			}
+			System.out.println();
+		}
+		
+		return l;
+	}
+	
+	//MERGE SORT
+	public static int[] mergeSort(int[] l) {
+		int mid = l.length/2;
+		if(l.length==1) {
+			return l;
+		}
+		int[] a = mergeSort(Arrays.copyOfRange(l, 0, mid));
+		int[] b = mergeSort(Arrays.copyOfRange(l, mid, l.length));
+		
+		return merge(a, b);
+		
+		
+	}
+	
+	public static int[] merge(int[] a, int[] b) {
+		int aPointer = 0;
+		int bPointer = 0;
+		int cPointer = 0;
+		int[] c = new int[a.length + b.length];
+		while(true) {
+			if(aPointer == a.length) {
+				for(int i = bPointer; i<b.length; i++) {
+					c[cPointer]=b[i];
+					cPointer++;
+				}
+				break;
+			}
+			
+			if(bPointer == b.length) {
+				for(int i = aPointer; i<a.length; i++) {
+					c[cPointer]=a[i];
+					cPointer++;
+				}
+				break;
+			}
+			
+			if(a[aPointer]<=b[bPointer]) {
+				c[cPointer] = a[aPointer];
+				aPointer++;
+			} else {
+				c[cPointer] = b[bPointer];
+				bPointer++;
+			}
+			cPointer++;
+		}
+		return c;
+	}
+}
